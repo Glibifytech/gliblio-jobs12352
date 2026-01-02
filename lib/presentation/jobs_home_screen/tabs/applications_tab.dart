@@ -30,7 +30,7 @@ class _ApplicationsTabState extends State<ApplicationsTab> {
     {
       'id': '1',
       'applicantName': 'John Smith',
-      'applicantAvatar': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop',
+      'applicantAvatar': 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=600&fit=crop&q=80',
       'jobTitle': 'DevOps Engineer',
       'appliedDate': '2d ago',
       'status': 'pending', // pending, reviewed, accepted, rejected
@@ -43,7 +43,7 @@ class _ApplicationsTabState extends State<ApplicationsTab> {
     {
       'id': '2',
       'applicantName': 'Sarah Johnson',
-      'applicantAvatar': 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop',
+      'applicantAvatar': 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=1200',
       'jobTitle': 'Senior Flutter Developer',
       'appliedDate': '1w ago',
       'status': 'reviewed',
@@ -56,7 +56,7 @@ class _ApplicationsTabState extends State<ApplicationsTab> {
     {
       'id': '3',
       'applicantName': 'Michael Chen',
-      'applicantAvatar': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop',
+      'applicantAvatar': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200',
       'jobTitle': 'DevOps Engineer',
       'appliedDate': '3d ago',
       'status': 'pending',

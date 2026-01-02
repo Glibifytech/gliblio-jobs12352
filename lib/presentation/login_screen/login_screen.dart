@@ -314,7 +314,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   // App Title Section
                   Text(
-                    'Connect, Share, Discover',
+                    'Jobs • Search • Freelancer',
                     style: AppTheme.lightTheme.textTheme.titleMedium?.copyWith(
                       color: AppTheme.lightTheme.colorScheme.onSurface.withValues(alpha: 0.7),
                       fontWeight: FontWeight.w400,
