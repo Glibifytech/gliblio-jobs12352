@@ -12,6 +12,9 @@ import '../presentation/profile_screen/profile_screen.dart';
 import '../presentation/application_details_screen/application_details_screen.dart';
 import '../presentation/job_poster_profile_screen/job_poster_profile_screen.dart';
 
+import '../presentation/owner_jobs_screen/owner_jobs_screen.dart';
+import '../presentation/owner_job_details_screen/owner_job_details_screen.dart';
+
 class _SplashScreen extends StatelessWidget {
   const _SplashScreen();
   @override
@@ -76,6 +79,15 @@ class AppRoutes {
         final posterData = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
           builder: (context) => JobPosterProfileScreen(posterData: posterData),
+        );
+      case '/owner-jobs':
+        return MaterialPageRoute(
+          builder: (context) => const OwnerJobsScreen(),
+        );
+      case '/owner-job-details':
+        final job = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (context) => OwnerJobDetailsScreen(job: job),
         );
       default:
         return null;

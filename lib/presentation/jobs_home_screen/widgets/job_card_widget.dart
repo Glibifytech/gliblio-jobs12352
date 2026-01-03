@@ -155,9 +155,12 @@ class JobCardWidget extends StatelessWidget {
                   children: [
                     Icon(Icons.location_on, size: 16, color: Colors.black54),
                     SizedBox(width: 4),
-                    Text(
-                      location,
-                      style: TextStyle(fontSize: 13, color: Colors.black54),
+                    Expanded(
+                      child: Text(
+                        location,
+                        style: TextStyle(fontSize: 13, color: Colors.black54),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                     SizedBox(width: 16),
                     Icon(Icons.access_time, size: 16, color: Colors.black54),
@@ -165,6 +168,7 @@ class JobCardWidget extends StatelessWidget {
                     Text(
                       jobType,
                       style: TextStyle(fontSize: 13, color: Colors.black54),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
@@ -176,9 +180,12 @@ class JobCardWidget extends StatelessWidget {
                   children: [
                     Icon(Icons.wifi, size: 16, color: Colors.black54),
                     SizedBox(width: 4),
-                    Text(
-                      workMode,
-                      style: TextStyle(fontSize: 13, color: Colors.black54),
+                    Expanded(
+                      child: Text(
+                        workMode,
+                        style: TextStyle(fontSize: 13, color: Colors.black54),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ],
                 ),
@@ -189,12 +196,15 @@ class JobCardWidget extends StatelessWidget {
                 Row(
                   children: [
                     Icon(Icons.attach_money, size: 18, color: Colors.black),
-                    Text(
-                      salaryRange,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black,
+                    Expanded(
+                      child: Text(
+                        salaryRange,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
@@ -291,7 +301,7 @@ class JobCardWidget extends StatelessWidget {
                     ElevatedButton(
                       onPressed: onApply,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
+                        backgroundColor: Theme.of(context).primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),

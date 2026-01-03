@@ -4,6 +4,8 @@ import '../../services/supabase_service.dart';
 import '../../services/user_service.dart';
 import '../../core/caching/user_profile_cache.dart';
 import '../../widgets/custom_loading.dart';
+import '../../repositories/jobs_repository.dart';
+import '../../models/job_model.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -15,6 +17,10 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   Map<String, dynamic>? _profile;
   bool _isLoading = true;
+  bool _isLoadingJobs = false;
+  List<Job> _postedJobs = [];
+  final JobsRepository _jobsRepository = JobsRepository();
+  bool _showPostedJobs = false;
 
   @override
   void initState() {
@@ -52,6 +58,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (mounted) {
         setState(() {
           _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _loadPostedJobs() async {
+    setState(() {
+      _isLoadingJobs = true;
+    });
+    
+    try {
+      final user = SupabaseService.instance.client.auth.currentUser;
+      if (user != null) {
+        final jobs = await _jobsRepository.getJobsPostedByUser(user.id);
+        final jobObjects = jobs.map((jobData) => Job.fromJson(jobData)).toList();
+        
+        if (mounted) {
+          setState(() {
+            _postedJobs = jobObjects;
+            _showPostedJobs = true;
+            _isLoadingJobs = false;
+          });
+        }
+      }
+    } catch (e) {
+      print('Error loading posted jobs: $e');
+      if (mounted) {
+        setState(() {
+          _isLoadingJobs = false;
         });
       }
     }
@@ -261,6 +296,119 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             SizedBox(height: 24),
           ],
+
+          // Posted Jobs section
+          _buildSectionTitle('Posted Jobs'),
+          SizedBox(height: 12),
+          Container(
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.grey[50],
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey[200]!),
+            ),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Jobs you posted',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        // Navigate to the owner jobs screen
+                        Navigator.pushNamed(context, '/owner-jobs');
+                      },
+                      child: Text(
+                        'Show',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                if (_showPostedJobs) ...[
+                  if (_isLoadingJobs)
+                    Padding(
+                      padding: EdgeInsets.all(16),
+                      child: CustomLoading(),
+                    )
+                  else if (_postedJobs.isEmpty)
+                    Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text(
+                        'You haven\'t posted any jobs yet.',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    )
+                  else
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: _postedJobs.length,
+                      itemBuilder: (context, index) {
+                        final job = _postedJobs[index];
+                        return Card(
+                          margin: EdgeInsets.only(bottom: 8),
+                          child: Padding(
+                            padding: EdgeInsets.all(12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  job.title,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  job.company,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  '${job.location} • ${job.jobType}',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  'Posted: ${job.postedTime}',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                ],
+              ],
+            ),
+          ),
+          SizedBox(height: 24),
 
           // Logout button
           SizedBox(

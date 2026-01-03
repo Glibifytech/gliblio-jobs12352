@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class JobDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> job;
@@ -16,8 +15,30 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
   bool _isExpanded = false;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  List<String> _parseSkills(dynamic requirements) {
+    if (requirements is List) {
+      return requirements.cast<String>();
+    }
+    if (requirements is String) {
+      // If it's a single string, split by common delimiters
+      return requirements.split(',').map((s) => s.trim()).toList();
+    }
+    return [];
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final skills = List<String>.from(widget.job['skills']);
+    print('DEBUG JOB DETAILS: widget.job = ${widget.job}');
+    print('DEBUG JOB DETAILS: poster_profile = ${widget.job['poster_profile']}');
+    print('DEBUG JOB DETAILS: posterName = ${widget.job['posterName']}');
+    print('DEBUG JOB DETAILS: posterUsername = ${widget.job['posterUsername']}');
+    print('DEBUG JOB DETAILS: posterAvatar = ${widget.job['posterAvatar']}');
+    
+    final skills = _parseSkills(widget.job['requirements'] ?? widget.job['skills'] ?? []);
     
     return Scaffold(
       backgroundColor: Colors.white,
@@ -47,97 +68,16 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Company header
-            Container(
-              padding: EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  // Company logo
-                  GestureDetector(
-                    onTap: () {
-                      // Navigate to poster profile
-                      Navigator.pushNamed(
-                        context,
-                        '/job-poster-profile',
-                        arguments: {
-                          'posterId': widget.job['posterId'],
-                          'posterName': widget.job['posterName'],
-                          'posterUsername': widget.job['posterUsername'],
-                          'posterAvatar': widget.job['posterAvatar'],
-                          'posterBio': widget.job['posterBio'],
-                          'posterSkills': widget.job['posterSkills'],
-                        },
-                      );
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        widget.job['posterAvatar'] ?? 'https://images.unsplash.com/photo-1549924231-f129b911e442?w=200&h=200&fit=crop',
-                        width: 64,
-                        height: 64,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            width: 64,
-                            height: 64,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Icon(Icons.person, color: Colors.grey[400]),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 16),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        // Navigate to poster profile
-                        Navigator.pushNamed(
-                          context,
-                          '/job-poster-profile',
-                          arguments: {
-                            'posterId': widget.job['posterId'],
-                            'posterName': widget.job['posterName'],
-                            'posterUsername': widget.job['posterUsername'],
-                            'posterAvatar': widget.job['posterAvatar'],
-                            'posterBio': widget.job['posterBio'],
-                            'posterSkills': widget.job['posterSkills'],
-                          },
-                        );
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.job['posterName'] ?? widget.job['company'],
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.black,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            widget.job['posterUsername'] ?? widget.job['company'],
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.black54,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black54),
-                ],
-              ),
-            ),
+            // Job Poster Profile Section
+            _buildPosterProfileSection(),
 
-            Divider(height: 1, thickness: 1),
+            Divider(height: 1, thickness: 1, color: Colors.grey[300]),
 
+            // Company Information Section  
+            _buildCompanySection(),
+            
+            Divider(height: 1, thickness: 1, color: Colors.grey[300]),
+            
             // Job title
             Padding(
               padding: EdgeInsets.all(16),
@@ -211,7 +151,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                       _isExpanded ? 'Read less' : 'Read more',
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.blue,
+                        color: Theme.of(context).primaryColor,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -243,13 +183,13 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                       child: Container(
                         padding: EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.1),
+                          color: Theme.of(context).primaryColor.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                          border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.3)),
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.link, color: Colors.blue, size: 20),
+                            Icon(Icons.link, color: Theme.of(context).primaryColor, size: 20),
                             SizedBox(width: 12),
                             Expanded(
                               child: Column(
@@ -268,7 +208,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                                     widget.job['externalLink'],
                                     style: TextStyle(
                                       fontSize: 12,
-                                      color: Colors.blue,
+                                      color: Theme.of(context).primaryColor,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -276,7 +216,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                                 ],
                               ),
                             ),
-                            Icon(Icons.open_in_new, color: Colors.blue, size: 18),
+                            Icon(Icons.open_in_new, color: Theme.of(context).primaryColor, size: 18),
                           ],
                         ),
                       ),
@@ -383,7 +323,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Theme.of(context).primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -435,6 +375,151 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
             style: TextStyle(fontSize: 13, color: Colors.black87),
           ),
         ],
+      ),
+    );
+  }
+
+  // Job Poster Profile Section (like design marketplace)
+  Widget _buildPosterProfileSection() {
+    final posterName = widget.job['posterName'] as String?;
+    final posterUsername = widget.job['posterUsername'] as String?;
+    final posterAvatar = widget.job['posterAvatar'] as String?;
+    final posterId = widget.job['posterId'] as String?;
+    
+    print('DEBUG PROFILE SECTION: posterName = $posterName');
+    print('DEBUG PROFILE SECTION: posterUsername = $posterUsername');
+    print('DEBUG PROFILE SECTION: posterAvatar = $posterAvatar');
+    
+    if (posterName == null || posterName.isEmpty || posterName == 'Job Poster') {
+      return SizedBox.shrink();
+    }
+
+    return Container(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Posted by',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(height: 8),
+          GestureDetector(
+            onTap: () {
+              print('DEBUG: Tapped on poster profile');
+              print('DEBUG: posterId = ${posterId}');
+              print('DEBUG: posterName = ${posterName}');
+              print('DEBUG: posterUsername = ${posterUsername}');
+              print('DEBUG: posterAvatar = ${posterAvatar}');
+              
+              if (posterId != null) {
+                Navigator.pushNamed(
+                  context,
+                  '/job-poster-profile',
+                  arguments: {
+                    'posterId': posterId,
+                    'posterName': posterName,
+                    'posterUsername': posterUsername?.replaceAll('@', '') ?? '',
+                    'posterAvatar': posterAvatar,
+                    'posterBio': widget.job['posterBio'],
+                    'posterSkills': widget.job['posterSkills'] ?? [],
+                  },
+                );
+              }
+            },
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: posterAvatar != null && posterAvatar.isNotEmpty
+                      ? Image.network(
+                          posterAvatar,
+                          width: 48,
+                          height: 48,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(Icons.person, color: Colors.grey[400], size: 24),
+                            );
+                          },
+                        )
+                      : Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(Icons.person, color: Colors.grey[400], size: 24),
+                        ),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        posterName,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        posterUsername ?? '',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black54),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Company Information Section
+  Widget _buildCompanySection() {
+    return Container(
+      padding: EdgeInsets.all(16),
+      child: Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.grey[50],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.business, color: Theme.of(context).primaryColor, size: 20),
+            SizedBox(width: 8),
+            Text(
+              widget.job['company_name'] ?? widget.job['company'] ?? 'N/A',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
