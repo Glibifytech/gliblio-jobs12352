@@ -4,7 +4,7 @@ import '../../repositories/jobs_repository.dart';
 import '../owner_job_details_screen/owner_job_details_screen.dart';
 
 class OwnerJobsScreen extends StatefulWidget {
-  const OwnerJobsScreen({Key? key}) : super(key: key);
+  const OwnerJobsScreen({super.key});
 
   @override
   State<OwnerJobsScreen> createState() => _OwnerJobsScreenState();
@@ -39,7 +39,6 @@ class _OwnerJobsScreenState extends State<OwnerJobsScreen> {
         });
       }
     } catch (e) {
-      print('Error loading owner jobs: $e');
       setState(() {
         _jobs = [];
         _isLoading = false;

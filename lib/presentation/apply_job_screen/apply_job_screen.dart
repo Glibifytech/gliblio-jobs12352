@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ApplyJobScreen extends StatefulWidget {
   final Map<String, dynamic> job;
 
-  const ApplyJobScreen({Key? key, required this.job}) : super(key: key);
+  const ApplyJobScreen({super.key, required this.job});
 
   @override
   State<ApplyJobScreen> createState() => _ApplyJobScreenState();
@@ -269,7 +269,7 @@ class _ApplyJobScreenState extends State<ApplyJobScreen> {
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: Offset(0, -5),
             ),

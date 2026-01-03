@@ -5,7 +5,7 @@ import '../../../repositories/jobs_repository.dart';
 import '../../../models/job_model.dart';
 
 class HomeTab extends StatefulWidget {
-  const HomeTab({Key? key}) : super(key: key);
+  const HomeTab({super.key});
 
   @override
   State<HomeTab> createState() => _HomeTabState();
@@ -39,7 +39,6 @@ class _HomeTabState extends State<HomeTab> {
         _isLoading = false;
       });
     } catch (e) {
-      print('Error loading jobs: $e');
       // If there's an error fetching real data, show mock data
       final mockJobs = _getMockJobs();
       setState(() {

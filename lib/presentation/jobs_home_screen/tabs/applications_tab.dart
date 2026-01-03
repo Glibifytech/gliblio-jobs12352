@@ -3,7 +3,7 @@ import '../widgets/application_card_widget.dart';
 import '../../../widgets/custom_loading.dart';
 
 class ApplicationsTab extends StatefulWidget {
-  const ApplicationsTab({Key? key}) : super(key: key);
+  const ApplicationsTab({super.key});
 
   @override
   State<ApplicationsTab> createState() => _ApplicationsTabState();

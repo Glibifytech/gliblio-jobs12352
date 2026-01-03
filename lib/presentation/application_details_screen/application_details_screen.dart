@@ -4,8 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 class ApplicationDetailsScreen extends StatelessWidget {
   final Map<String, dynamic> application;
 
-  const ApplicationDetailsScreen({Key? key, required this.application})
-      : super(key: key);
+  const ApplicationDetailsScreen({super.key, required this.application});
 
   @override
   Widget build(BuildContext context) {
@@ -232,7 +231,7 @@ class ApplicationDetailsScreen extends StatelessWidget {
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: Offset(0, -5),
                   ),

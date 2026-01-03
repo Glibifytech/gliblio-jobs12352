@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 class JobDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> job;
 
-  const JobDetailsScreen({Key? key, required this.job}) : super(key: key);
+  const JobDetailsScreen({super.key, required this.job});
 
   @override
   State<JobDetailsScreen> createState() => _JobDetailsScreenState();
@@ -32,11 +32,6 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('DEBUG JOB DETAILS: widget.job = ${widget.job}');
-    print('DEBUG JOB DETAILS: poster_profile = ${widget.job['poster_profile']}');
-    print('DEBUG JOB DETAILS: posterName = ${widget.job['posterName']}');
-    print('DEBUG JOB DETAILS: posterUsername = ${widget.job['posterUsername']}');
-    print('DEBUG JOB DETAILS: posterAvatar = ${widget.job['posterAvatar']}');
     
     final skills = _parseSkills(widget.job['requirements'] ?? widget.job['skills'] ?? []);
     
@@ -129,9 +124,11 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                   ),
                   SizedBox(height: 12),
                   Text(
-                    widget.job['description'] + '\n\n' +
-                    'We are looking for a talented professional to join our team. The ideal candidate will have strong technical skills and the ability to work collaboratively in a fast-paced environment.\n\n' +
-                    'This is a great opportunity to work on cutting-edge projects and make a real impact.',
+                    '''${widget.job['description']}
+
+We are looking for a talented professional to join our team. The ideal candidate will have strong technical skills and the ability to work collaboratively in a fast-paced environment.
+
+This is a great opportunity to work on cutting-edge projects and make a real impact.''',
                     maxLines: _isExpanded ? null : 4,
                     overflow: _isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
                     style: TextStyle(
@@ -183,9 +180,9 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                       child: Container(
                         padding: EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor.withOpacity(0.1),
+                          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.3)),
+                          border: Border.all(color: Theme.of(context).primaryColor.withValues(alpha: 0.3)),
                         ),
                         child: Row(
                           children: [
@@ -277,7 +274,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: Offset(0, -5),
             ),
@@ -290,10 +287,11 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                 child: OutlinedButton.icon(
                   onPressed: () {
                     // Share job
-                    final jobText = '${widget.job['title']} at ${widget.job['company']}\n' +
-                        '${widget.job['location']} • ${widget.job['jobType']}\n' +
-                        'Salary: ${widget.job['salaryRange']}\n\n' +
-                        'Apply now on Gliblio Jobs!';
+                    final jobText = '''${widget.job['title']} at ${widget.job['company']}
+${widget.job['location']} • ${widget.job['jobType']}
+Salary: ${widget.job['salaryRange']}
+
+Apply now on Gliblio Jobs!''';
                     
                     Clipboard.setData(ClipboardData(text: jobText));
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -386,9 +384,6 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
     final posterAvatar = widget.job['posterAvatar'] as String?;
     final posterId = widget.job['posterId'] as String?;
     
-    print('DEBUG PROFILE SECTION: posterName = $posterName');
-    print('DEBUG PROFILE SECTION: posterUsername = $posterUsername');
-    print('DEBUG PROFILE SECTION: posterAvatar = $posterAvatar');
     
     if (posterName == null || posterName.isEmpty || posterName == 'Job Poster') {
       return SizedBox.shrink();
@@ -410,11 +405,6 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
           SizedBox(height: 8),
           GestureDetector(
             onTap: () {
-              print('DEBUG: Tapped on poster profile');
-              print('DEBUG: posterId = ${posterId}');
-              print('DEBUG: posterName = ${posterName}');
-              print('DEBUG: posterUsername = ${posterUsername}');
-              print('DEBUG: posterAvatar = ${posterAvatar}');
               
               if (posterId != null) {
                 Navigator.pushNamed(

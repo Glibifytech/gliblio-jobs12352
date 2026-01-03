@@ -16,7 +16,7 @@ class JobCardWidget extends StatelessWidget {
   final VoidCallback onSave;
 
   const JobCardWidget({
-    Key? key,
+    super.key,
     required this.title,
     required this.company,
     required this.location,
@@ -30,7 +30,7 @@ class JobCardWidget extends StatelessWidget {
     required this.onViewDetails,
     required this.onApply,
     required this.onSave,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class JobCardWidget extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 8,
             offset: Offset(0, 2),
           ),
@@ -246,7 +246,7 @@ class JobCardWidget extends StatelessWidget {
                           ),
                         ),
                       );
-                    }).toList(),
+                    }),
                     if (skills.length > 3)
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),

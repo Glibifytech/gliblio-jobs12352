@@ -5,10 +5,10 @@ class CustomLoading extends StatefulWidget {
   final double size;
 
   const CustomLoading({
-    Key? key,
+    super.key,
     this.color = Colors.black,
     this.size = 50,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomLoading> createState() => _CustomLoadingState();

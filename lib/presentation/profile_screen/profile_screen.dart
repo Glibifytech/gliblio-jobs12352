@@ -8,7 +8,7 @@ import '../../repositories/jobs_repository.dart';
 import '../../models/job_model.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -83,7 +83,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         }
       }
     } catch (e) {
-      print('Error loading posted jobs: $e');
       if (mounted) {
         setState(() {
           _isLoadingJobs = false;

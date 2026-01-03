@@ -14,7 +14,6 @@ class JobsRepository {
           .eq('is_active', true)
           .order('created_at', ascending: false);
 
-      print('DEBUG REPO: Raw response = $response');
 
       if (response == null || (response as List).isEmpty) {
         return [];
@@ -22,10 +21,6 @@ class JobsRepository {
 
       // Map jobs to include poster_profile from cached columns
       final jobsWithProfiles = (response as List).map((job) {
-        print('DEBUG REPO: Job posted_by = ${job['posted_by']}');
-        print('DEBUG REPO: Job poster_username = ${job['poster_username']}');
-        print('DEBUG REPO: Job poster_full_name = ${job['poster_full_name']}');
-        print('DEBUG REPO: Job poster_avatar_url = ${job['poster_avatar_url']}');
         
         return <String, dynamic>{
           ...job as Map<String, dynamic>,
@@ -38,14 +33,11 @@ class JobsRepository {
         };
       }).toList();
 
-      print('DEBUG REPO: Jobs with profiles count = ${jobsWithProfiles.length}');
       if (jobsWithProfiles.isNotEmpty) {
-        print('DEBUG REPO: First job poster_profile = ${jobsWithProfiles[0]['poster_profile']}');
       }
 
       return jobsWithProfiles;
     } catch (e) {
-      print('Error fetching jobs: $e');
       rethrow;
     }
   }
@@ -79,7 +71,6 @@ class JobsRepository {
 
       return jobsWithProfiles;
     } catch (e) {
-      print('Error fetching jobs by poster ID: $e');
       rethrow;
     }
   }
@@ -94,7 +85,6 @@ class JobsRepository {
           .eq('id', jobId)
           .single();
 
-      print('DEBUG REPO: JobById raw job = $job');
 
       if (job == null) {
         return null;
@@ -111,11 +101,9 @@ class JobsRepository {
         },
       };
 
-      print('DEBUG REPO: JobById with profile = $jobWithProfile');
 
       return jobWithProfile;
     } catch (e) {
-      print('Error fetching job by ID: $e');
       return null;
     }
   }
@@ -140,7 +128,6 @@ class JobsRepository {
 
       return response.isNotEmpty;
     } catch (e) {
-      print('Error applying for job: $e');
       return false;
     }
   }
@@ -159,7 +146,6 @@ class JobsRepository {
 
       return response.isNotEmpty;
     } catch (e) {
-      print('Error checking application status: $e');
       return false;
     }
   }
@@ -181,7 +167,6 @@ class JobsRepository {
       }
       return [];
     } catch (e) {
-      print('Error fetching user applications: $e');
       rethrow;
     }
   }
@@ -232,7 +217,6 @@ class JobsRepository {
 
       return response;
     } catch (e) {
-      print('Error posting job: $e');
       return null;
     }
   }
@@ -253,7 +237,6 @@ class JobsRepository {
       }
       return [];
     } catch (e) {
-      print('Error fetching jobs posted by user: $e');
       rethrow;
     }
   }
@@ -269,7 +252,6 @@ class JobsRepository {
 
       return response;
     } catch (e) {
-      print('Error fetching profile: $e');
       return null;
     }
   }

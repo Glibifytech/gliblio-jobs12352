@@ -3,7 +3,7 @@ import '../widgets/job_card_widget.dart';
 import '../../../widgets/custom_loading.dart';
 
 class SavedTab extends StatefulWidget {
-  const SavedTab({Key? key}) : super(key: key);
+  const SavedTab({super.key});
 
   @override
   State<SavedTab> createState() => _SavedTabState();

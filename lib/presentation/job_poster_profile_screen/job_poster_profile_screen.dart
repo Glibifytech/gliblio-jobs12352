@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 class JobPosterProfileScreen extends StatelessWidget {
   final Map<String, dynamic> posterData;
 
-  const JobPosterProfileScreen({Key? key, required this.posterData}) : super(key: key);
+  const JobPosterProfileScreen({super.key, required this.posterData});
 
   @override
   Widget build(BuildContext context) {
-    print('DEBUG JOB POSTER PROFILE: posterData = $posterData');
     final skills = List<String>.from(posterData['posterSkills'] ?? []);
     
     return Scaffold(

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../repositories/jobs_repository.dart';
 import '../../widgets/custom_loading.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../services/supabase_service.dart';
 
 class PostJobScreen extends StatefulWidget {
-  const PostJobScreen({Key? key}) : super(key: key);
+  const PostJobScreen({super.key});
 
   @override
   State<PostJobScreen> createState() => _PostJobScreenState();
@@ -24,10 +23,9 @@ class _PostJobScreenState extends State<PostJobScreen> {
   
   String _selectedJobType = 'Full-time';
   String _selectedWorkMode = 'Remote';
-  String _selectedCurrency = 'NGN';
+  final String _selectedCurrency = 'NGN';
   final List<String> _jobTypes = ['Full-time', 'Part-time', 'Contract', 'Internship'];
   final List<String> _workModes = ['Remote', 'Hybrid', 'On-site'];
-  final List<String> _currencies = ['NGN', 'USD', 'EUR', 'GBP'];
   
   final JobsRepository _jobsRepository = JobsRepository();
   bool _isPostingJob = false;
@@ -298,7 +296,7 @@ class _PostJobScreenState extends State<PostJobScreen> {
           ),
           if (_isPostingJob)
             Container(
-              color: Colors.black.withOpacity(0.5),
+              color: Colors.black.withValues(alpha: 0.5),
               child: Center(
                 child: CustomLoading(),
               ),
@@ -311,7 +309,7 @@ class _PostJobScreenState extends State<PostJobScreen> {
           color: Theme.of(context).colorScheme.surface,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: Offset(0, -5),
             ),
@@ -322,7 +320,7 @@ class _PostJobScreenState extends State<PostJobScreen> {
             onPressed: _isPostingJob ? null : _submitJob,
             style: ElevatedButton.styleFrom(
               backgroundColor: _isPostingJob 
-                ? Theme.of(context).colorScheme.primary.withOpacity(0.5) 
+                ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.5) 
                 : Theme.of(context).colorScheme.primary,
               foregroundColor: Theme.of(context).colorScheme.onPrimary,
               shape: RoundedRectangleBorder(

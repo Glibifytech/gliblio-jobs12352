@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AlertTab extends StatelessWidget {
-  const AlertTab({Key? key}) : super(key: key);
+  const AlertTab({super.key});
 
   @override
   Widget build(BuildContext context) {

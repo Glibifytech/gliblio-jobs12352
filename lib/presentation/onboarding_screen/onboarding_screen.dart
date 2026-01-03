@@ -55,6 +55,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   padding: const EdgeInsets.all(16.0),
                   child: TextButton(
                     onPressed: () async {
+                      if (!mounted) return;
                       final prefs = await SharedPreferences.getInstance();
                       await prefs.setBool('hasSeenOnboarding', true);
                       if (mounted) {
@@ -124,6 +125,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         curve: Curves.easeInOut,
                       );
                     } else {
+                      if (!mounted) return;
                       final prefs = await SharedPreferences.getInstance();
                       await prefs.setBool('hasSeenOnboarding', true);
                       if (mounted) {

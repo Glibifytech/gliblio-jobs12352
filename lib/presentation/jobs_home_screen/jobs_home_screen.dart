@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../services/supabase_service.dart';
 import '../../services/user_service.dart';
-import '../../core/app_export.dart';
 import '../../core/caching/user_profile_cache.dart';
 import './tabs/home_tab.dart';
 import './tabs/post_jobs_tab.dart';

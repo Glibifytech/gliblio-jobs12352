@@ -6,7 +6,7 @@ import '../../models/job_model.dart';
 import '../../services/supabase_service.dart';
 
 class UserJobPostedScreen extends StatefulWidget {
-  const UserJobPostedScreen({Key? key}) : super(key: key);
+  const UserJobPostedScreen({super.key});
 
   @override
   State<UserJobPostedScreen> createState() => _UserJobPostedScreenState();
@@ -41,7 +41,6 @@ class _UserJobPostedScreenState extends State<UserJobPostedScreen> {
         });
       }
     } catch (e) {
-      print('Error loading posted jobs: $e');
       setState(() {
         _isLoading = false;
       });

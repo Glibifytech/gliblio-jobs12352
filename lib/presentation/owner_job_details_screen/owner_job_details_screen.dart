@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class OwnerJobDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> job;
 
-  const OwnerJobDetailsScreen({Key? key, required this.job}) : super(key: key);
+  const OwnerJobDetailsScreen({super.key, required this.job});
 
   @override
   State<OwnerJobDetailsScreen> createState() => _OwnerJobDetailsScreenState();

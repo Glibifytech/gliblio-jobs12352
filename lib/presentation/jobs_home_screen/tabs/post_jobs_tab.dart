@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PostJobsTab extends StatelessWidget {
-  const PostJobsTab({Key? key}) : super(key: key);
+  const PostJobsTab({super.key});
 
   @override
   Widget build(BuildContext context) {
