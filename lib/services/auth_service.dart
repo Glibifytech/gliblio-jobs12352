@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import './supabase_service.dart';
+import './guest_user_manager.dart';
 
 class AuthService {
   static AuthService? _instance;
@@ -40,6 +40,9 @@ class AuthService {
         },
       );
       
+      // Clear guest status when user signs up
+      await GuestUserManager.instance.markAsAuthenticated();
+      
       return response;
     } catch (error) {
       throw Exception('Sign up failed: $error');
@@ -68,6 +71,9 @@ class AuthService {
         email: email,
         password: password,
       );
+      
+      // Clear guest status when user logs in
+      await GuestUserManager.instance.markAsAuthenticated();
       
       return response;
     } catch (error) {
@@ -134,6 +140,8 @@ class AuthService {
   Future<void> signOut() async {
     try {
       await _client.auth.signOut();
+      // Clear guest status when signing out
+      await GuestUserManager.instance.clearGuestPreference();
     } catch (error) {
       throw Exception('Sign out failed: $error');
     }

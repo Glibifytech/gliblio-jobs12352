@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import '../../services/user_service.dart';
+import '../../services/guest_user_manager.dart';
 import '../../core/caching/user_profile_cache.dart';
+import '../../widgets/custom_loading.dart';
 import './tabs/home_tab.dart';
 import './tabs/post_jobs_tab.dart';
 import './tabs/applications_tab.dart';
 import './tabs/saved_tab.dart';
 import './tabs/alert_tab.dart';
+import './tabs/guest_post_jobs_tab.dart';
+import './tabs/guest_applications_tab.dart';
+import './tabs/guest_saved_tab.dart';
+import './tabs/guest_alert_tab.dart';
 
 class JobsHomeScreen extends StatefulWidget {
   const JobsHomeScreen({super.key});
@@ -17,11 +23,74 @@ class JobsHomeScreen extends StatefulWidget {
 class _JobsHomeScreenState extends State<JobsHomeScreen> {
   int _selectedIndex = 0;
   String? _avatarUrl;
+  bool _isGuestUser = false;
+  bool _isCheckingUserType = true; // Loading state
+  late List<Widget> _screens;
 
   @override
   void initState() {
     super.initState();
+    // Initialize with default screens first to avoid any issues
+    _screens = [
+      HomeTab(),
+      PostJobsTab(),
+      ApplicationsTab(),
+      SavedTab(),
+      AlertTab(),
+    ];
+    _checkUserType(); // Check immediately
     _loadUserProfile();
+  }
+  
+  Future<void> _checkUserType() async {
+    setState(() {
+      _isCheckingUserType = true;
+    });
+    
+    try {
+      // Add a timeout to prevent hanging
+      final isGuest = await GuestUserManager.instance.isGuestUser().timeout(
+        const Duration(seconds: 5),
+        onTimeout: () => false, // Default to non-guest if timeout
+      );
+      
+      if (mounted) { // Ensure widget is still mounted
+        setState(() {
+          _isGuestUser = isGuest;
+          _updateScreens();
+          _isCheckingUserType = false;
+        });
+      }
+    } catch (e) {
+      // If there's an error, default to authenticated view and stop loading
+      if (mounted) {
+        setState(() {
+          _isGuestUser = false; // Default to non-guest on error
+          _updateScreens();
+          _isCheckingUserType = false;
+        });
+      }
+    }
+  }
+  
+  void _updateScreens() {
+    if (_isGuestUser) {
+      _screens = [
+        HomeTab(),
+        GuestPostJobsTab(),
+        GuestApplicationsTab(),
+        GuestSavedTab(),
+        GuestAlertTab(),
+      ];
+    } else {
+      _screens = [
+        HomeTab(),
+        PostJobsTab(),
+        ApplicationsTab(),
+        SavedTab(),
+        AlertTab(),
+      ];
+    }
   }
 
   Future<void> _loadUserProfile() async {
@@ -51,16 +120,34 @@ class _JobsHomeScreenState extends State<JobsHomeScreen> {
     }
   }
 
-  final List<Widget> _screens = [
-    HomeTab(),
-    PostJobsTab(),
-    ApplicationsTab(),
-    SavedTab(),
-    AlertTab(),
-  ];
+
 
   @override
   Widget build(BuildContext context) {
+    // Show loading while checking user type
+    if (_isCheckingUserType) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Use your custom loading widget
+              const CustomLoading(),
+              const SizedBox(height: 16),
+              Text(
+                'Setting up your experience...',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -70,7 +157,16 @@ class _JobsHomeScreenState extends State<JobsHomeScreen> {
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, '/profile');
+              if (_isGuestUser) {
+                // For guest users, redirect to signup when clicking profile
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/signup-screen',
+                  (route) => route.isFirst,
+                );
+              } else {
+                Navigator.pushNamed(context, '/profile');
+              }
             },
             child: CircleAvatar(
               backgroundColor: Colors.grey[200],

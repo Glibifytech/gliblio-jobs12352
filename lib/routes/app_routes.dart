@@ -11,6 +11,8 @@ import '../presentation/post_job_screen/post_job_screen.dart';
 import '../presentation/profile_screen/profile_screen.dart';
 import '../presentation/application_details_screen/application_details_screen.dart';
 import '../presentation/job_poster_profile_screen/job_poster_profile_screen.dart';
+import '../presentation/profile_screen/guest_profile_screen.dart';
+import '../presentation/profile_screen/profile_screen_selector.dart';
 
 import '../presentation/owner_jobs_screen/owner_jobs_screen.dart';
 import '../presentation/owner_job_details_screen/owner_job_details_screen.dart';
@@ -51,7 +53,7 @@ class AppRoutes {
     home: (context) => const JobsHomeScreen(),
     passwordReset: (context) => const PasswordResetScreen(),
     postJob: (context) => const PostJobScreen(),
-    profile: (context) => const ProfileScreen(),
+    profile: (context) => const ProfileScreenSelector(),
   };
 
   static Route<dynamic>? generateRoute(RouteSettings settings) {
@@ -59,7 +61,8 @@ class AppRoutes {
       case '/post-job':
         return MaterialPageRoute(builder: (context) => const PostJobScreen());
       case '/profile':
-        return MaterialPageRoute(builder: (context) => const ProfileScreen());
+        // Use the profile screen selector to determine guest vs authenticated
+        return MaterialPageRoute(builder: (context) => const ProfileScreenSelector());
       case jobDetails:
         final job = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(

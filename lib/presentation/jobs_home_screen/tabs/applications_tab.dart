@@ -26,47 +26,48 @@ class _ApplicationsTabState extends State<ApplicationsTab> {
   }
 
   // Mock data - applications received for my job postings
-  final List<Map<String, dynamic>> _mockApplications = [
-    {
-      'id': '1',
-      'applicantName': 'John Smith',
-      'applicantAvatar': 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=600&fit=crop&q=80',
-      'jobTitle': 'DevOps Engineer',
-      'appliedDate': '2d ago',
-      'status': 'pending', // pending, reviewed, accepted, rejected
-      'email': 'john.smith@email.com',
-      'phone': '+1 (555) 123-4567',
-      'coverLetter': 'I am writing to express my strong interest in the DevOps Engineer position. With 5+ years of experience in cloud infrastructure and automation, I believe I would be a great fit for your team. My expertise includes AWS, Docker, Kubernetes, and CI/CD pipeline implementation.',
-      'skills': ['AWS', 'Docker', 'Kubernetes', 'Python', 'CI/CD'],
-      'resumeUrl': 'https://example.com/resume.pdf',
-    },
-    {
-      'id': '2',
-      'applicantName': 'Sarah Johnson',
-      'applicantAvatar': 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=1200',
-      'jobTitle': 'Senior Flutter Developer',
-      'appliedDate': '1w ago',
-      'status': 'reviewed',
-      'email': 'sarah.j@email.com',
-      'phone': '+1 (555) 987-6543',
-      'coverLetter': 'I have been working with Flutter for 3+ years and have built multiple production apps. I am passionate about creating beautiful, performant mobile applications and would love to join your innovative team.',
-      'skills': ['Flutter', 'Dart', 'Firebase', 'REST APIs', 'State Management'],
-      'resumeUrl': 'https://example.com/resume.pdf',
-    },
-    {
-      'id': '3',
-      'applicantName': 'Michael Chen',
-      'applicantAvatar': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200',
-      'jobTitle': 'DevOps Engineer',
-      'appliedDate': '3d ago',
-      'status': 'pending',
-      'email': 'michael.chen@email.com',
-      'phone': '+1 (555) 456-7890',
-      'coverLetter': 'With extensive experience in DevOps practices and cloud infrastructure, I am excited about the opportunity to contribute to your team. I have successfully implemented automated deployment pipelines and managed large-scale cloud infrastructure.',
-      'skills': ['Azure', 'Jenkins', 'Terraform', 'Docker', 'Monitoring'],
-      'resumeUrl': 'https://example.com/resume.pdf',
-    },
-  ];
+  // final List<Map<String, dynamic>> _mockApplications = [
+  //   {
+  //     'id': '1',
+  //     'applicantName': 'John Smith',
+  //     'applicantAvatar': 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=600&fit=crop&q=80',
+  //     'jobTitle': 'DevOps Engineer',
+  //     'appliedDate': '2d ago',
+  //     'status': 'pending', // pending, reviewed, accepted, rejected
+  //     'email': 'john.smith@email.com',
+  //     'phone': '+1 (555) 123-4567',
+  //     'coverLetter': 'I am writing to express my strong interest in the DevOps Engineer position. With 5+ years of experience in cloud infrastructure and automation, I believe I would be a great fit for your team. My expertise includes AWS, Docker, Kubernetes, and CI/CD pipeline implementation.',
+  //     'skills': ['AWS', 'Docker', 'Kubernetes', 'Python', 'CI/CD'],
+  //     'resumeUrl': 'https://example.com/resume.pdf',
+  //   },
+  //   {
+  //     'id': '2',
+  //     'applicantName': 'Sarah Johnson',
+  //     'applicantAvatar': 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=1200',
+  //     'jobTitle': 'Senior Flutter Developer',
+  //     'appliedDate': '1w ago',
+  //     'status': 'reviewed',
+  //     'email': 'sarah.j@email.com',
+  //     'phone': '+1 (555) 987-6543',
+  //     'coverLetter': 'I have been working with Flutter for 3+ years and have built multiple production apps. I am passionate about creating beautiful, performant mobile applications and would love to join your innovative team.',
+  //     'skills': ['Flutter', 'Dart', 'Firebase', 'REST APIs', 'State Management'],
+  //     'resumeUrl': 'https://example.com/resume.pdf',
+  //   },
+  //   {
+  //     'id': '3',
+  //     'applicantName': 'Michael Chen',
+  //     'applicantAvatar': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200',
+  //     'jobTitle': 'DevOps Engineer',
+  //     'appliedDate': '3d ago',
+  //     'status': 'pending',
+  //     'email': 'michael.chen@email.com',
+  //     'phone': '+1 (555) 456-7890',
+  //     'coverLetter': 'With extensive experience in DevOps practices and cloud infrastructure, I am excited about the opportunity to contribute to your team. I have successfully implemented automated deployment pipelines and managed large-scale cloud infrastructure.',
+  //     'skills': ['Azure', 'Jenkins', 'Terraform', 'Docker', 'Monitoring'],
+  //     'resumeUrl': 'https://example.com/resume.pdf',
+  //   },
+  // ];
+  final List<Map<String, dynamic>> _mockApplications = []; // Empty list instead of mock data
 
   @override
   Widget build(BuildContext context) {

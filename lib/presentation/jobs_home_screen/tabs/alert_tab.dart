@@ -14,7 +14,7 @@ class AlertTab extends StatelessWidget {
             Icon(Icons.notifications_outlined, size: 80, color: Colors.black26),
             SizedBox(height: 24),
             Text(
-              'Coming Soon',
+              'No Alerts Yet',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
@@ -23,7 +23,7 @@ class AlertTab extends StatelessWidget {
             ),
             SizedBox(height: 12),
             Text(
-              'Job alerts and notifications',
+              'Job alerts and notifications will appear here',
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.black54,

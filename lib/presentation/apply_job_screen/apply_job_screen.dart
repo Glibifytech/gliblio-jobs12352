@@ -279,7 +279,7 @@ class _ApplyJobScreenState extends State<ApplyJobScreen> {
           child: ElevatedButton(
             onPressed: _submitApplication,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.black,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),

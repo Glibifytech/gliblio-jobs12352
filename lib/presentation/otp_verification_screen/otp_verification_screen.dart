@@ -390,7 +390,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _verifyOTP,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Colors.black,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -443,7 +443,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                           'Resend OTP',
                           style: TextStyle(
                             fontSize: 14.sp,
-                            color: Colors.blue,
+                            color: Colors.black,
                             fontWeight: FontWeight.w500,
                           ),
                         ),

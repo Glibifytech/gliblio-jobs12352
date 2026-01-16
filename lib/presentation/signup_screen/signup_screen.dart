@@ -3,10 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 // import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/app_export.dart';
 import '../../theme/app_theme.dart';
 import '../../services/auth_service.dart';
+import '../../services/guest_user_manager.dart';
 import '../../utils/error_checker.dart';
 import '../../utils/offline_handling.dart';
 import '../../widgets/username_validator_widget.dart';
@@ -353,6 +355,38 @@ class _SignupScreenState extends State<SignupScreen> {
     HapticFeedback.selectionClick();
     Navigator.pushReplacementNamed(context, '/login-screen');
   }
+  
+  Future<void> _handleGuestAccess() async {
+    HapticFeedback.selectionClick();
+    
+    setState(() {
+      _isLoading = true;
+    });
+    
+    try {
+      // Set guest user preference
+      await GuestUserManager.instance.setGuestUser(true);
+      
+      // Small delay to ensure the preference is saved
+      await Future.delayed(const Duration(milliseconds: 100));
+      
+      if (mounted) {
+        // Navigate to jobs home screen as guest
+        // Using pushReplacementNamed instead of pushNamedAndRemoveUntil to avoid potential issues
+        Navigator.pushReplacementNamed(context, AppRoutes.home);
+      }
+    } catch (e) {
+      if (mounted) {
+        _showErrorMessage('Failed to continue as guest. Please try again.');
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -668,6 +702,69 @@ class _SignupScreenState extends State<SignupScreen> {
 
               SizedBox(height: 4.h),
 
+              // Guest User Option
+              SizedBox(height: 2.h),
+              
+              // Or divider
+              Row(
+                children: [
+                  Expanded(
+                    child: Divider(
+                      color: AppTheme.lightTheme.colorScheme.outline
+                          .withValues(alpha: 0.3),
+                      thickness: 1,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4.w),
+                    child: Text(
+                      'Or',
+                      style: AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
+                        color: AppTheme.lightTheme.colorScheme.onSurface
+                            .withValues(alpha: 0.6),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Divider(
+                      color: AppTheme.lightTheme.colorScheme.outline
+                          .withValues(alpha: 0.3),
+                      thickness: 1,
+                    ),
+                  ),
+                ],
+              ),
+              
+              SizedBox(height: 2.h),
+              
+              // Continue as Guest Button
+              SizedBox(
+                width: double.infinity,
+                height: 6.h,
+                child: OutlinedButton(
+                  onPressed: _handleGuestAccess,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppTheme.lightTheme.colorScheme.onSurface,
+                    side: BorderSide(
+                      color: AppTheme.lightTheme.colorScheme.outline,
+                      width: 1.5,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    'Continue as Guest',
+                    style: AppTheme.lightTheme.textTheme.labelLarge?.copyWith(
+                      color: AppTheme.lightTheme.colorScheme.onSurface,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+              
+              SizedBox(height: 2.h),
+              
               // Login Link
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

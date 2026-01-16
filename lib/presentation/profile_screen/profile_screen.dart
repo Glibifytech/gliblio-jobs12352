@@ -6,6 +6,7 @@ import '../../core/caching/user_profile_cache.dart';
 import '../../widgets/custom_loading.dart';
 import '../../repositories/jobs_repository.dart';
 import '../../models/job_model.dart';
+import 'delete_account_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -424,6 +425,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               child: Text(
                 'Logout',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+          
+          SizedBox(height: 16),
+          
+          // Delete Account button
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DeleteAccountScreen()),
+              ),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.red,
+                side: BorderSide(color: Colors.red),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 14),
+              ),
+              child: Text(
+                'Delete Account',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,

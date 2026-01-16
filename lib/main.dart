@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'core/app_export.dart';
 import 'widgets/custom_error_widget.dart';
 import './services/supabase_service.dart';
+import './services/guest_user_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -92,16 +93,50 @@ class _MyAppState extends State<MyApp> {
       // FORCE another delay
       await Future.delayed(Duration(milliseconds: 50));
       
-      final isLoggedIn = SupabaseService.instance.client.auth.currentSession != null;
+      // Safely check authentication status
+      bool isLoggedIn = false;
+      try {
+        isLoggedIn = SupabaseService.instance.client.auth.currentSession != null;
+      } catch (e) {
+        // If there's an error checking auth status, assume not logged in
+        isLoggedIn = false;
+      }
       
-      // Navigate
-      final route = isLoggedIn ? AppRoutes.home : AppRoutes.login;
+      // Check if user is a guest user
+      bool isGuestUser = false;
+      try {
+        isGuestUser = await GuestUserManager.instance.isGuestUser();
+      } catch (e) {
+        // If there's an error checking guest status, assume not a guest
+        isGuestUser = false;
+      }
+      
+      // Navigate based on authentication status and guest preference
+      String route;
+      if (isLoggedIn) {
+        route = AppRoutes.home; // Authenticated user
+      } else if (isGuestUser) {
+        route = AppRoutes.home; // Guest user (same route but tabs will behave differently)
+      } else {
+        route = AppRoutes.login; // Non-authenticated, non-guest user
+      }
+      
       _navigatorKey.currentState?.pushReplacementNamed(route);
     } catch (e) {
       // Fallback to normal launch
-      final isLoggedIn = SupabaseService.instance.client.auth.currentSession != null;
-      final route = isLoggedIn ? AppRoutes.home : AppRoutes.login;
-      _navigatorKey.currentState?.pushReplacementNamed(route);
+      try {
+        bool isLoggedIn = false;
+        try {
+          isLoggedIn = SupabaseService.instance.client.auth.currentSession != null;
+        } catch (authError) {
+          isLoggedIn = false;
+        }
+        final route = isLoggedIn ? AppRoutes.home : AppRoutes.login;
+        _navigatorKey.currentState?.pushReplacementNamed(route);
+      } catch (fallbackError) {
+        // If everything fails, go to login
+        _navigatorKey.currentState?.pushReplacementNamed(AppRoutes.login);
+      }
     }
   }
   
