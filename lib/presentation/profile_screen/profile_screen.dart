@@ -122,14 +122,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.edit, color: Colors.black),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Edit profile coming soon')),
-              );
-            },
-          ),
+          // IconButton(
+          //   icon: Icon(Icons.edit, color: Colors.black),
+          //   onPressed: () {
+          //     ScaffoldMessenger.of(context).showSnackBar(
+          //       SnackBar(content: Text('Edit profile coming soon')),
+          //     );
+          //   },
+          // ),
         ],
       ),
       body: ListView(
