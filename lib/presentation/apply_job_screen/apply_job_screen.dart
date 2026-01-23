@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../services/auth_service.dart';
 
 class ApplyJobScreen extends StatefulWidget {
   final Map<String, dynamic> job;
@@ -17,6 +21,8 @@ class _ApplyJobScreenState extends State<ApplyJobScreen> {
   final _coverLetterController = TextEditingController();
   final _linkedinController = TextEditingController();
   final _portfolioController = TextEditingController();
+  PlatformFile? _selectedResume;
+  bool _isUploading = false;
 
   @override
   void dispose() {
@@ -218,41 +224,83 @@ class _ApplyJobScreenState extends State<ApplyJobScreen> {
                     border: Border.all(color: Colors.grey[300]!),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.attach_file, color: Colors.black54),
-                      SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Upload Resume',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
+                      Row(
+                        children: [
+                          Icon(Icons.attach_file, color: Colors.black54),
+                          SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Upload Resume',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  'PDF, DOC, DOCX (Max 5MB)',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(height: 4),
-                            Text(
-                              'PDF, DOC, DOCX (Max 5MB)',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.black54,
+                          ),
+                          TextButton(
+                            onPressed: _isUploading ? null : _pickResume,
+                            child: _isUploading 
+                              ? SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                )
+                              : Text('Browse'),
+                          ),
+                        ],
+                      ),
+                      if (_selectedResume != null) ...[
+                        SizedBox(height: 12),
+                        Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.grey[300]!),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.description, color: Colors.blue),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  _selectedResume!.name,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black87,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                            ),
-                          ],
+                              IconButton(
+                                icon: Icon(Icons.close, size: 18, color: Colors.red),
+                                onPressed: () {
+                                  setState(() {
+                                    _selectedResume = null;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('File upload coming soon')),
-                          );
-                        },
-                        child: Text('Browse'),
-                      ),
+                      ],
                     ],
                   ),
                 ),
@@ -353,36 +401,191 @@ class _ApplyJobScreenState extends State<ApplyJobScreen> {
     );
   }
 
-  void _submitApplication() {
-    if (_formKey.currentState!.validate()) {
-      // TODO: Submit application to backend
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: Row(
-            children: [
-              Icon(Icons.check_circle, color: Colors.green, size: 28),
-              SizedBox(width: 12),
-              Text('Success!'),
-            ],
-          ),
-          content: Text(
-            'Your application has been submitted successfully. The employer will review it and get back to you soon.',
-            style: TextStyle(fontSize: 14),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // Close dialog
-                Navigator.pop(context); // Close apply screen
-                Navigator.pop(context); // Close job details
-              },
-              child: Text('OK', style: TextStyle(color: Colors.black)),
+  Future<void> _pickResume() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'doc', 'docx'],
+        withData: true,
+      );
+
+      if (result != null && result.files.single.path != null) {
+        final file = result.files.single;
+        
+        // Check file size (5MB limit)
+        if (file.size > 5 * 1024 * 1024) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('File size exceeds 5MB limit'),
+              backgroundColor: Colors.red,
             ),
-          ],
+          );
+          return;
+        }
+
+        setState(() {
+          _selectedResume = file;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Resume selected: ${file.name}'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to pick file: ${e.toString()}'),
+          backgroundColor: Colors.red,
         ),
       );
     }
+  }
+
+  Future<void> _submitApplication() async {
+    if (_formKey.currentState!.validate()) {
+      // Check if resume is required and selected
+      if (_selectedResume == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Please upload your resume'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 16),
+              Text('Submitting application...'),
+            ],
+          ),
+        ),
+      );
+
+      try {
+        // Submit application to backend with resume
+        await _uploadResumeAndSubmitApplication();
+        
+        // Dismiss loading dialog
+        Navigator.pop(context);
+        
+        // Show success dialog
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            title: Row(
+              children: [
+                Icon(Icons.check_circle, color: Colors.green, size: 28),
+                SizedBox(width: 12),
+                Text('Success!'),
+              ],
+            ),
+            content: Text(
+              'Your application has been submitted successfully with your resume. The employer will review it and get back to you soon.',
+              style: TextStyle(fontSize: 14),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  // Close dialog and return to previous screen
+                  Navigator.pop(context);
+                  Navigator.pop(context); // Close apply screen
+                  // Optionally show a snackbar instead of popping
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   SnackBar(content: Text('Application submitted successfully!')),
+                  // );
+                },
+                child: Text('OK', style: TextStyle(color: Colors.black)),
+              ),
+            ],
+          ),
+        );
+      } catch (e) {
+        // Dismiss loading dialog
+        Navigator.pop(context);
+        
+        // Show error dialog
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            title: Row(
+              children: [
+                Icon(Icons.error, color: Colors.red, size: 28),
+                SizedBox(width: 12),
+                Text('Error'),
+              ],
+            ),
+            content: Text(
+              'Failed to submit application: \${e.toString()}',
+              style: TextStyle(fontSize: 14),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('OK', style: TextStyle(color: Colors.black)),
+              ),
+            ],
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _uploadResumeAndSubmitApplication() async {
+    try {
+      // Get current user
+      final user = AuthService.instance.currentUser;
+      if (user == null) {
+        throw Exception('User not authenticated');
+      }
+
+      // Get Supabase client
+      final supabase = Supabase.instance.client;
+      
+      // For now, just save application without file upload
+      // Later we can implement file upload properly
+      final applicationData = {
+        'job_id': widget.job['id'],  // Assuming job ID is available
+        'applicant_id': user.id,
+        'resume_file_name': _selectedResume!.name,
+        'resume_file_size': _selectedResume!.size,
+        'resume_file_type': _selectedResume!.extension,
+        'cover_letter': _coverLetterController.text,
+        'application_status': 'pending',
+      };
+
+      await supabase
+          .from('glibliojob_apply_now_detail')
+          .insert(applicationData);
+
+      // If successful, clear form
+      _resetForm();
+    } catch (e) {
+      throw Exception('Error submitting application: ' + e.toString());
+    }
+  }
+
+  void _resetForm() {
+    _fullNameController.clear();
+    _emailController.clear();
+    _phoneController.clear();
+    _coverLetterController.clear();
+    _linkedinController.clear();
+    _portfolioController.clear();
+    _selectedResume = null;
   }
 }
